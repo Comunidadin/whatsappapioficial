@@ -1,10 +1,17 @@
 import { getConfig } from '@/lib/db/config'
 import { BotForm } from '@/components/bot/bot-form'
+import { FaltanTablas, esTablaFaltante } from '@/components/panel/faltan-tablas'
 
 export const dynamic = 'force-dynamic'
 
 export default async function BotPage() {
-  const config = await getConfig()
+  let config
+  try {
+    config = await getConfig()
+  } catch (err) {
+    if (esTablaFaltante(err)) return <FaltanTablas />
+    throw err
+  }
 
   return (
     <div className="h-screen overflow-y-auto">

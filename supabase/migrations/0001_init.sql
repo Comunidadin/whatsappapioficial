@@ -61,11 +61,15 @@ alter table contacts enable row level security;
 alter table messages enable row level security;
 alter table webhook_events enable row level security;
 
--- El panel (usuario logueado) lee contactos y mensajes; el resto pasa por el servidor.
+-- El panel lee contactos y mensajes desde el navegador (inbox en vivo); escribir pasa por el servidor.
+-- OJO: el panel no tiene login, así que el permiso es para `anon`. Mientras el panel esté solo en
+-- localhost no hay exposición; antes de publicarlo en internet hay que volver a exigir sesión aquí.
 drop policy if exists "auth lee contactos" on contacts;
 drop policy if exists "auth lee mensajes" on messages;
-create policy "auth lee contactos" on contacts for select to authenticated using (true);
-create policy "auth lee mensajes"  on messages for select to authenticated using (true);
+drop policy if exists "panel lee contactos" on contacts;
+drop policy if exists "panel lee mensajes" on messages;
+create policy "panel lee contactos" on contacts for select to anon, authenticated using (true);
+create policy "panel lee mensajes"  on messages for select to anon, authenticated using (true);
 
 -- config y webhook_events: sin políticas. Solo la secret key (que salta RLS).
 

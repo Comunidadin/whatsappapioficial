@@ -2,11 +2,18 @@ import { getConfig } from '@/lib/db/config'
 import { getLastWebhookEvents } from '@/lib/db/events'
 import { ConexionForm } from '@/components/conexion/conexion-form'
 import { haceCuanto } from '@/components/panel/pulso'
+import { FaltanTablas, esTablaFaltante } from '@/components/panel/faltan-tablas'
 
 export const dynamic = 'force-dynamic'
 
 export default async function ConexionPage() {
-  const [config, eventos] = await Promise.all([getConfig(), getLastWebhookEvents(10)])
+  let config, eventos
+  try {
+    ;[config, eventos] = await Promise.all([getConfig(), getLastWebhookEvents(10)])
+  } catch (err) {
+    if (esTablaFaltante(err)) return <FaltanTablas />
+    throw err
+  }
   const base = process.env.APP_BASE_URL ?? 'http://localhost:3000'
 
   return (

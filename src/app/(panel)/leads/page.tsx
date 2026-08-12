@@ -1,11 +1,18 @@
 import { listContacts } from '@/lib/db/contacts'
 import { getMetrics } from '@/lib/db/metrics'
 import { LeadsTable } from '@/components/leads/leads-table'
+import { FaltanTablas, esTablaFaltante } from '@/components/panel/faltan-tablas'
 
 export const dynamic = 'force-dynamic'
 
 export default async function LeadsPage() {
-  const [contactos, metricas] = await Promise.all([listContacts(), getMetrics()])
+  let contactos, metricas
+  try {
+    ;[contactos, metricas] = await Promise.all([listContacts(), getMetrics()])
+  } catch (err) {
+    if (esTablaFaltante(err)) return <FaltanTablas />
+    throw err
+  }
 
   const tarjetas: [string, number, boolean][] = [
     ['Conversaciones nuevas', metricas.nuevos, false],
