@@ -11,7 +11,10 @@ const DIAS: [string, string][] = [
 ]
 
 export function BotForm({ config }: { config: BotConfig }) {
-  const [prompt, setPrompt] = useState(config.system_prompt)
+  // Sin instrucciones propias todavía, arranca con el texto base del rol para no dejar el campo mudo.
+  const [prompt, setPrompt] = useState(
+    config.system_prompt || ROLE_PROMPTS[config.bot_role as BotRole] || ROLE_PROMPTS.personalizado,
+  )
   const [aviso, setAviso] = useState<string | null>(null)
   const [prueba, setPrueba] = useState('')
   const [respuesta, setRespuesta] = useState<{ ok: boolean; texto: string } | null>(null)
