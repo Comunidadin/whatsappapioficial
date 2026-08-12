@@ -74,5 +74,19 @@ create policy "panel lee mensajes"  on messages for select to anon, authenticate
 -- config y webhook_events: sin políticas. Solo la secret key (que salta RLS).
 
 -- Realtime para el inbox en vivo.
-alter publication supabase_realtime add table messages;
-alter publication supabase_realtime add table contacts;
+-- Va dentro de un bloque que traga el error: si la publicación ya incluye la tabla
+-- (o está definida FOR ALL TABLES), fallaría y arrastraría a toda la migración con ella.
+do $$
+begin
+  begin
+    alter publication supabase_realtime add table messages;
+  exception when others then null;
+  end;
+  begin
+    alter publication supabase_realtime add table contacts;
+  exception when others then null;
+  end;
+end $$;
+
+-- Que la API REST se entere de las tablas nuevas sin esperar.
+notify pgrst, 'reload schema';
