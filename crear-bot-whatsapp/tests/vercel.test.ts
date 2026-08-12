@@ -5,7 +5,9 @@ vi.mock('../src/ejecutar.js', () => ({ ejecutar: vi.fn() }))
 import { ejecutar } from '../src/ejecutar.js'
 import { estaLogueado, cargarVariables, desplegar } from '../src/api/vercel.js'
 
-beforeEach(() => vi.mocked(ejecutar).mockReset())
+// mockClear y no mockReset: con Vitest 4, un mock reseteado que luego devuelve
+// una promesa rechazada la reporta como error del test aunque el código la capture.
+beforeEach(() => vi.mocked(ejecutar).mockClear())
 
 describe('estaLogueado', () => {
   it('es verdadero si whoami responde un usuario', async () => {
@@ -14,7 +16,9 @@ describe('estaLogueado', () => {
   })
 
   it('es falso si whoami falla', async () => {
-    vi.mocked(ejecutar).mockImplementation(() => Promise.reject(new Error('not authenticated')))
+    vi.mocked(ejecutar).mockImplementationOnce(() =>
+      Promise.reject(new Error('not authenticated')),
+    )
     expect(await estaLogueado()).toBe(false)
   })
 })
