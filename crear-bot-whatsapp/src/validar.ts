@@ -37,11 +37,20 @@ export function validarPin(valor: string): Resultado {
   return /^\d{6}$/.test(valor.trim()) ? ok : mal('El PIN son exactamente 6 dígitos')
 }
 
-export function validarNombreCarpeta(valor: string): Resultado {
-  const limpio = valor.trim()
-  if (limpio === '') return mal('Escribe un nombre para la carpeta')
-  if (!/^[a-zA-Z0-9._-]+$/.test(limpio)) {
-    return mal('Usa solo letras, números, guiones y puntos, sin espacios')
-  }
-  return ok
+/**
+ * Nombre del proyecto en Vercel, sacado de la carpeta donde se ejecuta el comando.
+ * Vercel solo acepta minúsculas, números y guiones, y no más de 100 caracteres.
+ */
+export function nombreDeProyecto(carpeta: string): string {
+  const base = carpeta.replace(/[/\\]+$/, '').split(/[/\\]/).pop() ?? ''
+  const limpio = base
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 100)
+    .replace(/-$/, '')
+
+  return limpio === '' ? 'bot-whatsapp' : limpio
 }
+

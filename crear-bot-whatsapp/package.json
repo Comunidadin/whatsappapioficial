@@ -1,6 +1,6 @@
 {
   "name": "crear-bot-whatsapp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Crea tu panel de bot de WhatsApp: base de datos, despliegue y webhook, en un solo comando",
   "type": "module",
   "bin": {

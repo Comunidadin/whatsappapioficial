@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   validarUrlSupabase, refDeSupabase, validarSecretKey, validarPublishableKey,
-  validarPat, validarPin, validarNombreCarpeta,
+  validarPat, validarPin, nombreDeProyecto,
 } from '../src/validar.js'
 
 describe('validarUrlSupabase', () => {
@@ -55,14 +55,26 @@ describe('validarPin', () => {
   })
 })
 
-describe('validarNombreCarpeta', () => {
-  it('acepta un nombre sencillo', () => {
-    expect(validarNombreCarpeta('mi-bot').ok).toBe(true)
+describe('nombreDeProyecto', () => {
+  it('usa el nombre de la carpeta donde está parado el alumno', () => {
+    expect(nombreDeProyecto('/Users/ana/mi-bot')).toBe('mi-bot')
   })
 
-  it('rechaza vacío, espacios y barras', () => {
-    expect(validarNombreCarpeta('').ok).toBe(false)
-    expect(validarNombreCarpeta('mi bot').ok).toBe(false)
-    expect(validarNombreCarpeta('mi/bot').ok).toBe(false)
+  it('limpia lo que Vercel no acepta', () => {
+    expect(nombreDeProyecto('/Users/joffre/Desktop/[Bot Clase]')).toBe('bot-clase')
+    expect(nombreDeProyecto('/tmp/Mi Bot de WhatsApp!')).toBe('mi-bot-de-whatsapp')
+  })
+
+  it('no deja guiones sueltos al principio ni al final', () => {
+    expect(nombreDeProyecto('/tmp/---raro---')).toBe('raro')
+  })
+
+  it('cae en un nombre por defecto si no queda nada usable', () => {
+    expect(nombreDeProyecto('/tmp/***')).toBe('bot-whatsapp')
+  })
+
+  it('recorta los nombres larguísimos', () => {
+    expect(nombreDeProyecto('/tmp/' + 'a'.repeat(200)).length).toBeLessThanOrEqual(100)
   })
 })
+

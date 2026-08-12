@@ -1,4 +1,4 @@
-import { cp, writeFile } from 'node:fs/promises'
+import { cp, writeFile, stat } from 'node:fs/promises'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ejecutar } from './ejecutar.js'
@@ -7,6 +7,23 @@ export const RAIZ_PLANTILLA = join(dirname(fileURLToPath(import.meta.url)), '..'
 
 export async function copiarPlantilla(destino: string): Promise<void> {
   await cp(RAIZ_PLANTILLA, destino, { recursive: true })
+}
+
+/**
+ * ¿Hay ya un proyecto instalado aquí? Se mira antes de copiar encima:
+ * correr el comando en la carpeta equivocada no debería borrarle el trabajo a nadie.
+ */
+export async function carpetaOcupada(destino: string): Promise<boolean> {
+  const señales = ['package.json', 'src']
+  for (const señal of señales) {
+    try {
+      await stat(join(destino, señal))
+      return true
+    } catch {
+      // No está: seguimos mirando.
+    }
+  }
+  return false
 }
 
 export async function escribirEnv(

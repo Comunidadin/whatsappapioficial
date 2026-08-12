@@ -1,14 +1,14 @@
 import { randomBytes } from 'node:crypto'
-import { resolve } from 'node:path'
 import * as p from '@clack/prompts'
 import type { Numero } from './api/meta.js'
 import { revisarToken, buscarWabas, listarNumeros } from './api/meta.js'
 import { comprobarKeyOpenai } from './api/openai.js'
 import { comprobarSecretKey } from './api/supabase.js'
 import { MENSAJES } from './mensajes.js'
+import { carpetaOcupada } from './plantilla.js'
 import {
   validarUrlSupabase, validarSecretKey, validarPublishableKey,
-  validarPat, validarPin, validarNombreCarpeta, type Resultado,
+  validarPat, validarPin, nombreDeProyecto, type Resultado,
 } from './validar.js'
 import type { Datos } from './pasos.js'
 
@@ -80,8 +80,18 @@ export async function preguntarTodo(): Promise<Datos> {
   p.intro(MENSAJES.bienvenida)
   p.note(MENSAJES.antesDeEmpezar, 'Ten a mano')
 
-  const nombreProyecto = await pedirTexto('Nombre de la carpeta del proyecto', validarNombreCarpeta)
-  const carpeta = resolve(process.cwd(), nombreProyecto)
+  // El bot se instala aquí mismo: el alumno ya está parado en la carpeta que quiere.
+  const carpeta = process.cwd()
+  const nombreProyecto = nombreDeProyecto(carpeta)
+
+  if (await carpetaOcupada(carpeta)) {
+    p.log.warn(MENSAJES.carpetaOcupada(carpeta))
+    const seguir = await p.confirm({ message: '¿Instalo aquí de todas formas?', initialValue: false })
+    siCancela(seguir)
+    if (!seguir) throw new Error(MENSAJES.carpetaOcupadaSalida)
+  }
+
+  p.log.info(`Instalo en ${carpeta}`)
 
   const supabaseUrl = await pedirTexto('URL de tu proyecto de Supabase', validarUrlSupabase)
   const publishableKey = await pedirTexto(

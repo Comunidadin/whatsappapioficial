@@ -15,6 +15,12 @@ export const MENSAJES = {
     '  4. Una cuenta de Vercel (vercel.com)',
   ].join('\n'),
 
+  carpetaOcupada: (carpeta: string) =>
+    `En ${carpeta} ya hay un proyecto. Si sigo, copio el bot encima y puedes perder lo que haya.`,
+
+  carpetaOcupadaSalida:
+    'Sal a una carpeta vacía y vuelve a ejecutar el comando desde ahí.',
+
   avisoNumero:
     'Ojo: al registrar el número en la API, deja de funcionar en la app normal de WhatsApp del celular. Usa una línea dedicada, no tu número personal.',
 
