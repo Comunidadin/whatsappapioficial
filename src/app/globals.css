@@ -1,26 +1,60 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+  Sala de control. Todo el panel es tinta sobre papel y azul marino;
+  el ámbar está reservado para una sola cosa: un chat que dejó de ser
+  del bot y ahora te toca a ti. Si ves ámbar, hay alguien esperando.
+*/
+@theme {
+  --color-paper: #f6f6f3;
+  --color-panel: #ffffff;
+  --color-ink: #14181f;
+  --color-muted: #6b7280;
+  --color-line: #e4e4df;
+  --color-navy: #1f2b4d;
+  --color-navy-soft: #eef1f8;
+  --color-signal: #b45309;
+  --color-signal-soft: #fdf3e3;
+  --color-danger: #b42318;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Etiquetas de sección: versalitas espaciadas, el único adorno tipográfico. */
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Latido del webhook: confirma que Meta sigue entregando. */
+@keyframes latido {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.82); }
+}
+
+.latido {
+  animation: latido 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .latido {
+    animation: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-navy);
+  outline-offset: 2px;
 }
