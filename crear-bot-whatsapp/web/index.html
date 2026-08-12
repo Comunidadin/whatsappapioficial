@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crea tu bot de WhatsApp</title>
+<style>
+  :root { --tinta: #14181f; --papel: #f6f6f3; --linea: #e4e4df; --marino: #1f2b4d; --gris: #6b7280; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 2rem 1.25rem;
+    background: var(--papel); color: var(--tinta);
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+  main { max-width: 36rem; width: 100%; }
+  .eyebrow {
+    font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--gris); margin: 0;
+  }
+  h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); letter-spacing: -0.02em; margin: 0.5rem 0 0.75rem; }
+  .entrada { color: var(--gris); line-height: 1.6; margin: 0 0 2rem; }
+  .comando {
+    display: flex; align-items: center; gap: 0.75rem;
+    border: 1px solid var(--linea); border-radius: 0.75rem;
+    background: #fff; padding: 0.75rem 0.75rem 0.75rem 1.25rem;
+  }
+  code {
+    flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap;
+    font-family: ui-monospace, SFMono-Regular, monospace; font-size: 1.05rem;
+  }
+  button {
+    flex-shrink: 0; border: 0; border-radius: 0.5rem; cursor: pointer;
+    background: var(--marino); color: #fff; padding: 0.6rem 1.1rem;
+    font: inherit; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  button:focus-visible { outline: 2px solid var(--marino); outline-offset: 2px; }
+  h2 { font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.14em;
+       text-transform: uppercase; color: var(--gris); margin: 3rem 0 0.75rem; }
+  ol { margin: 0; padding-left: 1.25rem; color: var(--gris); line-height: 1.7; font-size: 0.9375rem; }
+  ol strong { color: var(--tinta); font-weight: 500; }
+  .aviso {
+    margin-top: 2rem; border-left: 2px solid var(--marino); padding-left: 1rem;
+    font-size: 0.875rem; color: var(--gris); line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Un comando</p>
+  <h1>Crea tu bot de WhatsApp</h1>
+  <p class="entrada">
+    Pega esto en tu terminal y sales con tu panel desplegado, la base de datos creada
+    y el webhook de Meta configurado. Sin tocar un solo formulario.
+  </p>
+
+  <div class="comando">
+    <code id="comando">npx crear-bot-whatsapp</code>
+    <button id="copiar" type="button">Copiar</button>
+  </div>
+
+  <h2>Antes de empezar, ten a mano</h2>
+  <ol>
+    <li><strong>Supabase</strong> — un proyecto creado, con su URL y sus claves</li>
+    <li><strong>OpenAI</strong> — una API key con saldo cargado</li>
+    <li><strong>Vercel</strong> — solo la cuenta</li>
+    <li><strong>Meta</strong> — una app con WhatsApp y su token permanente</li>
+    <li><strong>Un número dedicado</strong> — un chip aparte, no tu número personal</li>
+  </ol>
+
+  <p class="aviso">
+    El número que uses deja de funcionar en la app normal de WhatsApp: pasa a ser
+    manejado por tu panel. Por eso hace falta una línea dedicada.
+  </p>
+</main>
+
+<script>
+  const boton = document.getElementById('copiar')
+  const comando = document.getElementById('comando').textContent.trim()
+
+  boton.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(comando)
+      boton.textContent = 'Copiado'
+    } catch {
+      boton.textContent = 'Copia a mano'
+    }
+    setTimeout(() => { boton.textContent = 'Copiar' }, 2000)
+  })
+</script>
+</body>
+</html>
