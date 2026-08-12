@@ -1,0 +1,33 @@
+{
+  "name": "crear-bot-whatsapp",
+  "version": "0.1.0",
+  "description": "Crea tu panel de bot de WhatsApp: base de datos, despliegue y webhook, en un solo comando",
+  "type": "module",
+  "bin": {
+    "crear-bot-whatsapp": "bin/crear-bot-whatsapp.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "plantilla"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "sincronizar": "node scripts/sincronizar-plantilla.mjs",
+    "prepublishOnly": "npm run sincronizar && npm run build && npm test"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.7.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}
