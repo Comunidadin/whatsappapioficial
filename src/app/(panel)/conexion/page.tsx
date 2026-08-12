@@ -1,3 +1,4 @@
+import { headers } from 'next/headers'
 import { getConfig } from '@/lib/db/config'
 import { getLastWebhookEvents } from '@/lib/db/events'
 import { ConexionForm } from '@/components/conexion/conexion-form'
@@ -14,7 +15,12 @@ export default async function ConexionPage() {
     if (esTablaFaltante(err)) return <FaltanTablas />
     throw err
   }
-  const base = process.env.APP_BASE_URL ?? 'http://localhost:3000'
+  // La URL se deduce de la propia petición: así siempre coincide con el dominio
+  // por el que estás entrando, sin tener que configurarla a mano en cada despliegue.
+  const cabeceras = await headers()
+  const host = cabeceras.get('x-forwarded-host') ?? cabeceras.get('host') ?? 'localhost:3000'
+  const protocolo = host.startsWith('localhost') ? 'http' : 'https'
+  const base = process.env.APP_BASE_URL ?? `${protocolo}://${host}`
 
   return (
     <div className="h-screen overflow-y-auto">
